@@ -34,9 +34,15 @@ jobs:
         echo "CC=gcc-12" >> $GITHUB_ENV
         echo "CXX=g++-12" >> $GITHUB_ENV
     # The simulator stands in for the CUDA runtime at run time, so the shared
-    # one is linked; the build selects Turing (sm_75), the simulated T4.
+    # one is linked; the build selects Turing (sm_75), the simulated T4. The
+    # simulator's action sets CMAKE_TOOLCHAIN_FILE, which would stop CMakeLists
+    # picking up vcpkg, so the vcpkg toolchain is named here.
     - name: Configure Build
-      run: mkdir build && cd build && cmake -DUSE_CUDA=ON -DCUDA_USE_STATIC_CUDA_RUNTIME=OFF -DCMAKE_BUILD_TYPE=Release ..
+      run: |
+        mkdir build && cd build
+        cmake -DUSE_CUDA=ON -DCUDA_USE_STATIC_CUDA_RUNTIME=OFF -DCMAKE_CUDA_RUNTIME_LIBRARY=Shared \
+          -DCMAKE_TOOLCHAIN_FILE="$VCPKG_INSTALLATION_ROOT/scripts/buildsystems/vcpkg.cmake" \
+          -DCMAKE_BUILD_TYPE=Release ..
     - name: Build
       run: cd build && make -j"$(nproc)"
     - name: Run CUDA Unit Test on the simulated GPU
