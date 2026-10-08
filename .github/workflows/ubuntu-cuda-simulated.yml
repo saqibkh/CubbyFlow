@@ -25,7 +25,7 @@ jobs:
     - name: Install packages
       run: sudo apt-get update && sudo apt-get install -yq autoconf autoconf-archive automake libtool python3-setuptools
     - name: Simulated GPU (NVIDIA T4) and CUDA 12.6
-      uses: pantheongpu/pantheonsim@5a7ed5100c2d21d67a360872600df5ae8e8bb4bf # main, rehearsal
+      uses: pantheongpu/setup-pantheonsim@06648b8c0cb091584196678593215db2e16bd7eb # v0.1.2
       with:
         gpu: nvidia/t4
         cuda-toolkit: '12.6'
